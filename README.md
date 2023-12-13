@@ -77,8 +77,8 @@ schema1.isValid(()=>1); // false;
 schema1.isValid(1); // false;
 
 const schema3 = v.function().callWith({prop: 1}).expect('1'); 
-schema1.isValid(()=>'1'); // true;
-schema1.isValid(()=>1); // false;
+schema1.isValid(() => '1'); // true;
+schema1.isValid(() => 1); // false;
 schema1.isValid(function () { return this.prop }); // true;
 ```
 
@@ -88,7 +88,7 @@ schema1.isValid(function () { return this.prop }); // true;
 
 ```javascript
 const v = new Validator();
-const schema = v.function().arguments(1, 2, 3, 4, 5, 6, 7).expect(1); 
+const schema = v.function().arguments([1, 2, 3, 4, 5, 6, 7]).expect(1); 
 
 schema.isValid((args) => Math.min(...args)); // true;
 schema.isValid(() =>1 ); // true;
@@ -121,7 +121,7 @@ schema.isValid({
       func: ()=>{}, 
       innerObj: { string: 'he he he', 
         deepestObj: { 
-          func: (arg) => arg.slice(0, arg.length-2)
+          func: (arg) => arg.slice(0, arg.length-1).join('')
         }
       }
     }
