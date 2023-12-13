@@ -50,7 +50,7 @@ test('task4', () => {
 
   assert.equal(schema.isValid((args) => Math.min(...args)), true);
   assert.equal(schema.isValid(() => 1), true);
-  assert.equal(schema.isValid(function () { return this.prop; }), false);
+  assert.equal(schema.isValid(function p() { return this.prop; }), false);
 });
 
 test('task5', () => {
@@ -76,7 +76,7 @@ test('task5', () => {
       innerObj: {
         string: 'he he he',
         deepestObj: {
-          func: (args) => args.slice(0, args.length - 1).join('')
+          func: (args) => args.slice(0, args.length - 1).join(''),
         },
       },
     },
