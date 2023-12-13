@@ -88,8 +88,8 @@ schema1.isValid(function () { return this.prop }); // true;
 
 ```javascript
 const v = new Validator();
-
 const schema = v.function().arguments(1, 2, 3, 4, 5, 6, 7).expect(1); 
+
 schema.isValid((args) => Math.min(...args)); // true;
 schema.isValid(() =>1 ); // true;
 schema.isValid(function () { return this.prop }); // false;
