@@ -88,7 +88,7 @@ schema1.isValid(function () { return this.prop }); // true;
 
 ```javascript
 const v = new Validator();
-const schema = v.function().arguments(1, 2, 3, 4, 5, 6, 7).expect(1); 
+const schema = v.function().arguments([1, 2, 3, 4, 5, 6, 7]).expect(1); 
 
 schema.isValid((args) => Math.min(...args)); // true;
 schema.isValid(() =>1 ); // true;
@@ -109,7 +109,7 @@ const schema = v.object().shape({
     innerObj: {
       string: v.string().hasSpaces(),
       deepestObj: {
-        func: v.function().arguments('hello').expect('hell'),
+        func: v.function().arguments(['h', 'e', 'l', 'l', 'o']).expect('hell'),
       }
     }
   }
@@ -121,7 +121,7 @@ schema.isValid({
       func: ()=>{}, 
       innerObj: { string: 'he he he', 
         deepestObj: { 
-          func: (arg) => arg.slice(0, arg.length-2)
+          func: (arg) => arg.slice(0, arg.length-2).join('')
         }
       }
     }

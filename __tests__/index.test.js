@@ -28,52 +28,57 @@ test('task2', () => {
 
 test('task3', () => {
   const v = new Validator();
+
   const schema1 = v.function();
-
-  assert.equal(schema1.isValid(()=>{}), true);
-  assert.equal(schema1.isValid({}), false);
+  assert.equal(schema1.isValid(() => { }), true);
   assert.equal(schema1.isValid(console.log), true);
+  assert.equal(schema1.isValid({}), false);
 
-  const schema2 = v.function().expect('1')
-  assert.equal(schema2.isValid([[1], [2]]), false);
-  assert.equal(schema2.isValid(()=>1), false);
-  assert.equal(schema2.isValid(()=>{return '1'}), true);
+  const schema2 = v.function().expect('1');
+  assert.equal(schema2.isValid(() => 1), false);
+  assert.equal(schema2.isValid(() => '1'), true);
+
+  const schema3 = v.function().callWith({ prop: '1' }).expect('1');
+  assert.equal(schema3.isValid(() => '1'), true);
+  assert.equal(schema3.isValid(() => 1), false);
+  assert.equal(schema3.isValid(function test() { return this.prop; }), true);
 });
 
 test('task4', () => {
   const v = new Validator();
-  const schema = v.function().arguments(1, 2, 3, 4, 5, 6, 7).expect(1); 
+  const schema = v.function().arguments([1, 2, 3, 4, 5, 6, 7]).expect(1);
 
-  assert.equal(schema.isValid({ num: 54, array: [1, 2, 3, 5, 65, 2] }), true);
-  assert.equal(schema.isValid({ num: 2, array: [1, 2, '4'] }), false);
+  assert.equal(schema.isValid((args) => Math.min(...args)), true);
+  assert.equal(schema.isValid(() => 1), true);
+  assert.equal(schema.isValid(function p() { return this.prop; }), false);
 });
 
 test('task5', () => {
   const v = new Validator();
 
   const schema = v.object().shape({
-    num: v.number(),
+    string: v.string(),
     obj: {
-      array: v.array().allIntegers(),
+      func: v.function(),
       innerObj: {
-        num: v.number(),
+        string: v.string().hasSpaces(),
         deepestObj: {
-          num: v.number(),
+          func: v.function().arguments(['h', 'e', 'l', 'l', 'o']).expect('hell'),
         },
       },
     },
   });
 
-  assert.equal(schema.isValid({ 
-    string: '54', 
-      obj: { 
-        func: ()=>{}, 
-        innerObj: { string: 'he he he', 
-          deepestObj: { 
-            func: (arg) => arg.slice(0, arg.length-2)
-          }
-        }
-      }
+  assert.equal(schema.isValid({
+    string: '54',
+    obj: {
+      func: () => { },
+      innerObj: {
+        string: 'he he he',
+        deepestObj: {
+          func: (args) => args.slice(0, args.length - 1).join(''),
+        },
+      },
+    },
   }), true);
-  assert.equal(schema.isValid({ num: 54, obj: { array: [1, 2], innerObj: { num: 2, deepestObj: { num: 'gg' } } } }), false);
 });
