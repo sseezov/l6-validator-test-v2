@@ -46,11 +46,15 @@ test('task3', () => {
 
 test('task4', () => {
   const v = new Validator();
-  const schema = v.function().arguments([1, 2, 3, 4, 5, 6, 7]).expect(1);
+  const schema1 = v.function().arguments([1, 2, 3, 4, 5, 6, 7]).expect(1);
 
-  assert.equal(schema.isValid((args) => Math.min(...args)), true);
-  assert.equal(schema.isValid(() => 1), true);
-  assert.equal(schema.isValid(function p() { return this.prop; }), false);
+  assert.equal(schema1.isValid((args) => Math.min(...args)), true);
+  assert.equal(schema1.isValid(() => 1), true);
+  assert.equal(schema1.isValid(function p() { return this.prop; }), false);
+
+  const schema2 = v.function().arguments([1, 2, 3, 4, 5, 6, 7]).expect(true).callWith({ prop: 2 });
+  assert.equal(schema2.isValid(function p(args) { return args[1] === this.prop; }), true); // true;
+  assert.equal(schema2.isValid(function p(args) { return args[2] === this.prop; }), false); // true;
 });
 
 test('task5', () => {
