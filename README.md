@@ -77,8 +77,8 @@ schema1.isValid(()=>1); // false;
 schema1.isValid(1); // false;
 
 const schema3 = v.function().callWith({prop: 1}).expect('1'); 
-schema1.isValid(()=>'1'); // true;
-schema1.isValid(()=>1); // false;
+schema1.isValid(() => '1'); // true;
+schema1.isValid(() => 1); // false;
 schema1.isValid(function () { return this.prop }); // true;
 ```
 
@@ -91,8 +91,15 @@ const v = new Validator();
 const schema = v.function().arguments([1, 2, 3, 4, 5, 6, 7]).expect(1); 
 
 schema.isValid((args) => Math.min(...args)); // true;
-schema.isValid(() =>1 ); // true;
+schema.isValid(() => 1); // true;
 schema.isValid(function () { return this.prop }); // false;
+
+const v = new Validator();
+const schema = v.function().arguments([1, 2, 3, 4, 5, 6, 7]).expect(true).callWith({prop: 2});
+
+schema.isValid(function (args) { return args[1] === this.prop }); // true;
+schema.isValid(function (args) { return args[2] === this.prop }); // false;
+
 ```
 
 ## 5 задача
@@ -109,7 +116,7 @@ const schema = v.object().shape({
     innerObj: {
       string: v.string().hasSpaces(),
       deepestObj: {
-        func: v.function().arguments(['h', 'e', 'l', 'l', 'o']).expect('hell'),
+        func: v.function().arguments('hello').expect('hell'),
       }
     }
   }
@@ -121,7 +128,7 @@ schema.isValid({
       func: ()=>{}, 
       innerObj: { string: 'he he he', 
         deepestObj: { 
-          func: (arg) => arg.slice(0, arg.length-2).join('')
+          func: (arg) => arg.slice(0, arg.length-1).join('')
         }
       }
     }
