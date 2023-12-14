@@ -91,8 +91,15 @@ const v = new Validator();
 const schema = v.function().arguments([1, 2, 3, 4, 5, 6, 7]).expect(1); 
 
 schema.isValid((args) => Math.min(...args)); // true;
-schema.isValid(() =>1 ); // true;
+schema.isValid(() => 1); // true;
 schema.isValid(function () { return this.prop }); // false;
+
+const v = new Validator();
+const schema = v.function().arguments([1, 2, 3, 4, 5, 6, 7]).expect(true).callWith({prop: 2});
+
+schema.isValid(function (args) { return args[1] === this.prop }); // true;
+schema.isValid(function (args) { return args[2] === this.prop }); // false;
+
 ```
 
 ## 5 задача
